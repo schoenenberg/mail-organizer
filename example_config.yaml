@@ -1,0 +1,29 @@
+host: imap_server_url
+port: 143
+username: my-username
+password: my-super-secret-password
+rules:
+  - name: Move example mail starting with
+    enabled: true
+    trigger:
+      SubjectStartsWith: "[Example] This a example message!"
+    action:
+      MoveIntoMailbox: Examples
+  - name: Move example mail ending with
+    enabled: true
+    trigger:
+      SubjectEndsWith: "example message!"
+    action:
+      MoveIntoMailbox: Examples
+  - name: Move example mail containing in subject
+    enabled: true
+    trigger:
+      SubjectContains: "This a example"
+    action:
+      MoveIntoMailbox: Examples
+  - name: Move example mail with exact subject
+    enabled: true
+    trigger:
+      SubjectExact: "[Example] This a example message!"
+    action:
+      MoveIntoMailbox: Examples
