@@ -5,9 +5,7 @@ extern crate serde_yaml;
 #[macro_use]
 extern crate clap;
 
-use std::error::Error;
-
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Account {
     host: String,
     port: u16,
@@ -16,7 +14,7 @@ pub struct Account {
     rules: Vec<Rule>,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct Rule {
     name: String,
     enabled: bool,
@@ -24,7 +22,7 @@ pub struct Rule {
     action: Action,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub enum Trigger {
     SubjectContains(String),
     SubjectStartsWith(String),
@@ -32,12 +30,12 @@ pub enum Trigger {
     SubjectExact(String),
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Deserialize)]
 pub enum Action {
     MoveIntoMailbox(String),
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = clap::App::new("mail-organizer")
         .version(crate_version!())
         .author(crate_authors!())
@@ -54,7 +52,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if let Ok(file) = std::fs::read_to_string(&c) {
             let account: Account = serde_yaml::from_str(file.as_str())?;
             if let Ok(successful) = run(account) {
-                println!("Processed mails of config '{}': {}", &c,  successful)
+                println!("Number of processed mails for config '{}': {}", &c,  successful)
             }
         } else {
             eprintln!("Error reading file: {}", c)
@@ -77,6 +75,12 @@ fn run(config: Account) -> Result<usize, imap::Error> {
     let mut imap_session = client
         .login(config.username.as_str(), config.password.as_str())
         .map_err(|e| e.0)?;
+
+    // Check for capabilities
+    let capabilities = imap_session.capabilities()?;
+    if !capabilities.has_str("UIDPLUS") {
+        panic!("Server '{}', does not support UIDPLUS", config.host);
+    }
 
     // we want to fetch the first email in the INBOX mailbox
     let mailbox = imap_session.select("INBOX")?;

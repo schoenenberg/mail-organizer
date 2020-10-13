@@ -2,12 +2,12 @@
 
 I wrote this small utility to clean up my mail inboxes. It is planned to let this utility run with a cron job, so it scans my mails every 5 minutes and moves those away based on my configured rules.
 
-This utility is not stable yet. It's under heavy development and might change completly.
+This utility is not stable yet. It's under heavy development and might change completely.
 
 ## Prerequisites
 
 - Rust toolchain installed
-- Mail account with `UIDPLUS` capability (Attention: This is currently not checked before trying to apply the rules!!)
+- Mail account with `UIDPLUS` capability
 
 ## Install
 
@@ -31,3 +31,17 @@ Execute the program and add your configs as arguments.
 # Or without prior building
 cargo run --release -- ./example_config.yaml ./example_config_2.yaml
 ```
+
+## Using Docker
+
+First create a docker image:
+```bash
+docker build -t mail-organizer:0.1.0 .
+```
+
+Next run the Docker Image and mount your configs:
+```bash
+docker run --rm -t -v $(PWD)/example.yaml:/opt/etc/configs/example.yaml mail-organizer:0.1.0
+```
+
+By default the docker image is using all `/opt/etc/configs/*.yaml`.
