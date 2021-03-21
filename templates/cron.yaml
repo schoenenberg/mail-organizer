@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mail-organizer
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mail-organizer
+            image: "{{- .Values.image.repository -}}:{{- default "latest" .Values.image.tag -}}"
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - mountPath: /home/nonroot
+                name: configs
+                readOnly: true
+          volumes:
+            - name: configs
+              secret:
+                secretName: mail-configs
+          restartPolicy: OnFailure

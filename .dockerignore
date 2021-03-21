@@ -2,3 +2,9 @@
 .git/
 .gitignore
 *.yaml
+
+templates/
+Chart.yaml
+.helmignore
+values.yaml
+charts/

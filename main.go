@@ -107,7 +107,7 @@ func main() {
 		args = os.Args[1:]
 	} else {
 		var err error
-		args, err = filepath.Glob("*.yaml")
+		args, err = filepath.Glob("*.yml")
 		if err != nil {
 			log.Fatalln(err)
 		}

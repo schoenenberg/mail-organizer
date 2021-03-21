@@ -22,7 +22,7 @@ go build .
 Execute the program and add your configs as arguments.
 
 ```bash
-.mail-organizer ./example_config.yaml ./example_config_2.yaml
+./mail-organizer ./example_config.yaml ./example_config_2.yaml
 # Or without prior building
 go run . ./example_config.yaml ./example_config_2.yaml
 ```

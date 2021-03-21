@@ -13,4 +13,4 @@ FROM gcr.io/distroless/static-debian10:nonroot
 WORKDIR /home/nonroot
 COPY --from=build --chown=nonroot /go/bin/app ./
 
-ENTRYPOINT ["./app"]
+ENTRYPOINT ["/home/nonroot/app"]
