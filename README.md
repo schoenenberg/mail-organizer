@@ -6,20 +6,15 @@ This utility is not stable yet. It's under heavy development and might change co
 
 ## Prerequisites
 
-- Rust toolchain installed
+- Go toolchain installed
 - Mail account with `UIDPLUS` capability
 
 ## Install
 
 1. First clone this repository.
-
-- To just build this utility:
+2. To just build this utility:
 ```bash
-cargo build --release
-```
-- To install
-```bash
-cargo install
+go build .
 ```
 
 ## Usage
@@ -27,9 +22,9 @@ cargo install
 Execute the program and add your configs as arguments.
 
 ```bash
-./target/release/mail-organizer ./example_config.yaml ./example_config_2.yaml
+.mail-organizer ./example_config.yaml ./example_config_2.yaml
 # Or without prior building
-cargo run --release -- ./example_config.yaml ./example_config_2.yaml
+go run . ./example_config.yaml ./example_config_2.yaml
 ```
 
 ## Using Docker
@@ -41,7 +36,5 @@ docker build -t mail-organizer:0.1.0 .
 
 Next run the Docker Image and mount your configs:
 ```bash
-docker run --rm -t -v $(PWD)/example.yaml:/opt/etc/configs/example.yaml mail-organizer:0.1.0
+docker run --rm -t -v $(PWD)/example.yaml:/home/nonroot/example.yaml:ro mail-organizer:0.1.0
 ```
-
-By default the docker image is using all `/opt/etc/configs/*.yaml`.

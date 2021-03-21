@@ -1,14 +1,16 @@
-FROM rust:latest AS builder
+# Start by building the application.
+FROM golang:buster as build
 
-WORKDIR /opt/src/mail-organizer
-COPY ./src/main.rs ./src/main.rs
-COPY ./Cargo.toml ./Cargo.toml
+WORKDIR /go/src/app
+COPY . /go/src/app
 
-RUN cargo build --release
+RUN go get -d -v ./...
+RUN CGO_ENABLED=0 go build -o /go/bin/app
 
-FROM debian:buster
+# Now copy it into our base image.
+FROM gcr.io/distroless/static-debian10:nonroot
 
-RUN mkdir -p /opt/etc/configs && apt-get update && apt-get -y upgrade && apt-get -y install openssl ca-certificates
-COPY --from=builder /opt/src/mail-organizer/target/release/mail-organizer /opt/bin/mail-organizer
+WORKDIR /home/nonroot
+COPY --from=build --chown=nonroot /go/bin/app ./
 
-CMD /opt/bin/mail-organizer /opt/etc/configs/*.yaml
+ENTRYPOINT ["./app"]

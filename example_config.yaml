@@ -2,28 +2,39 @@ host: imap_server_url
 port: 143
 username: my-username
 password: my-super-secret-password
+tlsmode: true
+starttlsmode: false
 rules:
   - name: Move example mail starting with
     enabled: true
     trigger:
-      SubjectStartsWith: "[Example] This a example message!"
+      or:
+        - and:
+            SubjectStartsWith: "[Example] This a example message!"
+            DateBefore: "24h"
     action:
       MoveIntoMailbox: Examples
   - name: Move example mail ending with
     enabled: true
     trigger:
-      SubjectEndsWith: "example message!"
+      or:
+        - and:
+            SubjectEndsWith: "example message!"
     action:
       MoveIntoMailbox: Examples
   - name: Move example mail containing in subject
     enabled: true
     trigger:
-      SubjectContains: "This a example"
+      or:
+        - and:
+            SubjectContains: "This a example"
     action:
       MoveIntoMailbox: Examples
   - name: Move example mail with exact subject
     enabled: true
     trigger:
-      SubjectExact: "[Example] This a example message!"
+      or:
+        - and:
+            SubjectExact: "[Example] This a example message!"
     action:
       MoveIntoMailbox: Examples
